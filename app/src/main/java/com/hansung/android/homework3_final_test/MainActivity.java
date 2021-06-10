@@ -6,15 +6,42 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.text.DateFormat;
+import java.time.Year;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
+    static Context mContext = null;
+//    static FloatingActionButton fabRoute;
+    static int gYear, gMonth, gDay, gHour, gMinute;
+
+    static Context getAppContext()
+    {
+        return mContext;
+    }
+
+    //선택한 날짜 시간 저장
+    static void setTime(int year, int month, int day, int hour, int minute)
+    {
+        gYear = year;
+        gMonth = month;
+        gDay = day;
+        gHour = hour;
+        gMinute = minute;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +58,36 @@ public class MainActivity extends AppCompatActivity {
         //vpPager.setAdapter(adapter);
 
         int mParam1 = Calendar.getInstance().get(Calendar.YEAR);  //Calender 객체를 return : 호출 시점의 년도
-        int mParam2 = Calendar.getInstance().get(Calendar.MONTH);  //Calender 객체를 return : 호출 시점의 월 --> 월 정보는 0~ 11까지 나옴 따라서 +1
+        int mParam2 = Calendar.getInstance().get(Calendar.MONTH) + 1;  //Calender 객체를 return : 호출 시점의 월 --> 월 정보는 0~ 11까지 나옴 따라서 +1
 
         MonthViewFragment monthViewFragment = MonthViewFragment.newInstance(mParam1,mParam2); //newInstance에서 MonthFragment 객체를 받았음
-
-
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container,monthViewFragment ).commit();
 
+        setTitle(mParam1 +"년 " + mParam2 + "월");
 
+        mContext = getApplicationContext();
+
+        gYear = mParam1;
+        gMonth = mParam2;
+        gDay = 1;
+
+        FloatingActionButton fab = findViewById(R.id.fab); //floating 버튼 클릭시
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, MainActivity2.class);
+            //선택된 날짜 MainActivity2에 넘겨주기 줄처:https://winmargo.tistory.com/134
+            Bundle b = new Bundle();
+            b.putInt("Year", gYear);
+            b.putInt("Month", gMonth);
+            b.putInt("Day", gDay);
+            b.putInt("Hour", gHour);
+            b.putInt("Minute", gMinute);
+            intent.putExtras(b); //선택된 날짜를 MainActivity2에 넘겨줌
+            startActivity(intent);
+        });
 
     }
+
+
 
     //액션 및 오버플로 메뉴(옵션 메뉴)는 현재 액티비티와 관련된 여러 가지 동작이나 선택사항을 설정하는 메뉴
     //액션 및 오버플로 메뉴를 생성하려면 onCreateOptionMenu() 메소드를 재정의 한다.
@@ -64,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 //FragmentTransaction: 프로그먼트를 추가, 삭제 또는 교체 등의 작업 등의 작업 수행 중에 오류가 발생하면 다시 원래 상태로 되돌릴 수 있도록 해주는 기능을 구현한 클래스
                 //FragmentManger의 beginTranaction() 메소드 호출을 통해 FragmentTransaction의 인스턴스를 얻어옴
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                int yy1 = Calendar.getInstance().get(Calendar.YEAR);
+                int mm1 = Calendar.getInstance().get(Calendar.MONTH);
+                setTitle(yy1 +"년 " + (mm1+1) + "월");
                 // 얻어온 fragmentTransaction에 대해 수행하고자 하는 모든 변경 사항을 설정하려면 add(), remove(), 및 replace()와 같은 메서드를 사용함
                 fragmentTransaction.replace(R.id.main_container, new MonthViewFragment());
                 //주어진 트랜잭션에 대해 수행하고자 하는 모든 변경 사항을 적용하려면 FragmentTransaction의 commit()을 호출해야 함
@@ -74,9 +124,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.week_view: // 주 항목 선택시
                 //---동적 프래그 먼트 추가-----------------------------
-                 fragmentManager = getSupportFragmentManager(); // 안드로이드 이전 버전들에서도 프래그먼트를 사용할 수 있도록 만든 ... 지원하는 기능으로, 현재 액티비티가 AppCompatActivity를 확장하여 만든 경우에 사용함
-                 fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.main_container, new WeekViewFragment());
+                fragmentManager = getSupportFragmentManager(); // 안드로이드 이전 버전들에서도 프래그먼트를 사용할 수 있도록 만든 ... 지원하는 기능으로, 현재 액티비티가 AppCompatActivity를 확장하여 만든 경우에 사용함
+                fragmentTransaction = fragmentManager.beginTransaction();
+                int yy = Calendar.getInstance().get(Calendar.YEAR);
+                int mm = Calendar.getInstance().get(Calendar.MONTH);
+                setTitle(yy +"년 " + (mm+1) + "월");
+                WeekViewFragment weekViewFragment = WeekViewFragment.newInstance(yy, mm, 1);
+                fragmentTransaction.replace(R.id.main_container, weekViewFragment);
                 fragmentTransaction.commit();
 
                 //---------------------------------------------------
@@ -87,4 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
+
+

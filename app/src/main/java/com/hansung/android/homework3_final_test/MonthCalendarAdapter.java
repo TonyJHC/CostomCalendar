@@ -2,10 +2,14 @@ package com.hansung.android.homework3_final_test;
 
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 
@@ -31,7 +35,7 @@ public class MonthCalendarAdapter extends FragmentStateAdapter {
     // 여기서 프래그먼트를 만들어줘야됨(MonthCalendarFragement에 year랑 month를 파라미터로 제공하면 MonthCalenderFragment에서 프래그먼트를 만들어서 return)
     @Override
     public Fragment createFragment(int position){
-        MonthViewFragment monthFragment = new MonthViewFragment();
+//        MonthViewFragment monthFragment = new MonthViewFragment(); !!!
 
         System.out.println("createFragement ");
         // Bundle bundle = new Bundle();
@@ -101,8 +105,8 @@ public class MonthCalendarAdapter extends FragmentStateAdapter {
         //MonthCalenderFragment는 year와 month에 해당되는 월간 달력(MonthCalenderFragment)을 만들어서 return해준다
         return MonthCalenderFragment.newInstance(year,month);  //달에 따라 year, month 변경내용 newInstance()에 파라미터로 넘김
 
-    }
 
+    }
 
 
     // 전체 페이지 개수 반환ㄴㄴ

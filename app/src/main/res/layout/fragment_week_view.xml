@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:add="http://schemas.android.com/apk/res-auto"
     tools:context=".WeekViewFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="주간 달력" />
+         />
+
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPager"
         android:layout_width="match_parent"

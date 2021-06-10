@@ -2,6 +2,7 @@ package com.hansung.android.homework3_final_test;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +31,7 @@ public class MonthViewFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     FragmentActivity listener;
+
 
     static int year;
     static int month;
@@ -69,6 +75,7 @@ public class MonthViewFragment extends Fragment {
              year = getArguments().getInt(ARG_PARAM1,-99);
              month = getArguments().getInt(ARG_PARAM2,-99);
         }
+
     }
 
     //onAttach() --> 프래그먼트가 액티비티에 연결될 때 호출됨
@@ -81,6 +88,8 @@ public class MonthViewFragment extends Fragment {
     }
 
 
+
+
     //프래그먼트 수명주기도 액티비티의 수명주기에 종속적
     // onCreateView() --> 프래그먼트의 레이아웃을 생성 
     @Override
@@ -90,20 +99,36 @@ public class MonthViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_month_view, container, false);
 
         //MonthCalenderFragment에  year, month 전달
-        MonthCalenderFragment monthCalenderFragment = new MonthCalenderFragment();
-        monthCalenderFragment.newInstance(year, month);
+//        MonthCalenderFragment monthCalenderFragment = new MonthCalenderFragment(); !!!
+//        monthCalenderFragment.newInstance(year, month); !!!
 
         //ViewPager2 객체에 FragmentStateAdapter 객체 설정
         //ViewPager 객체에 앞서 정의한 PagerAdapter 객체를 설정
         ViewPager2 vpPager = rootView.findViewById(R.id.vpPager); //fragment_month_view.xml에서 불러오기
         FragmentStateAdapter adapter = new MonthCalendarAdapter(this);
         vpPager.setAdapter(adapter);
-        vpPager.setCurrentItem(50); // ViewPager2 객체의 현재 페이지를 설정 :50 --> thirdFragment
+        vpPager.setCurrentItem(50, false); // ViewPager2 객체의 현재 페이지를 설정 :50 --> thirdFragment
 
 
         vpPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) { // 페이지 바뀔때 월 바꾸기 ?
+
+
+                // 변경된 날짜 구하기
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, month + position - 50);
+                cal.set(Calendar.DATE, 1);
+
+                int y = cal.get(Calendar.YEAR);
+                int m = cal.get(Calendar.MONTH);
+
+                // 변경된 년월 저장
+                MainActivity.setTime(y, m, 1, 12, 0);
+
+                ((MainActivity)getActivity()).setTitle(y +"년 " + m + "월"); //앱바에 년월 표시
+
                 Toast.makeText(getActivity(),
                         "Selected page position: " + position, Toast.LENGTH_SHORT).show();
             }

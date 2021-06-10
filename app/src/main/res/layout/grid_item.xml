@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="97.333dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:paddingLeft="1dp"
+    android:paddingRight="1dp"
+    android:paddingBottom="2dp"
+    android:background="#6200EE"
+    >
+
+    <!-- Cell contents -->
+    <FrameLayout
+        android:id="@+id/cell"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|top"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+</LinearLayout>

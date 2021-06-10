@@ -1,8 +1,16 @@
 package com.hansung.android.homework3_final_test;
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -10,11 +18,18 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
+
+import static com.hansung.android.homework3_final_test.MainActivity.mContext;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,9 +59,13 @@ public class MonthCalenderFragment extends Fragment {
     private int mParam1;
     private int mParam2;
 
+    View mView = null;
+
     public MonthCalenderFragment() {
         // Required empty public constructor
     }
+
+
 
 
     //MonthCalendarAdapter 에서 newInstance 호출하여 파라미터 전달
@@ -62,6 +81,7 @@ public class MonthCalenderFragment extends Fragment {
         return fragment; // Adapter에 onCreateView에서 만든 gridview 달력을 넘겨줌
     }
 
+
     //프래그먼트가 생성되면 최초로 onCreate함수를 호출
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +92,9 @@ public class MonthCalenderFragment extends Fragment {
             month = getArguments().getInt(ARG_PARAM2,-99);
         }
 
+
     }
+
 
     //onCreateView함수에서 캘린더 화면을 만들어서 넘겨줘야됨
     //Adapter에서 MonthCalenderFragment.newInstance(year,month); 를 호출해서 newInstance에서 MonthCalenderFragment를 생성하면
@@ -179,18 +201,56 @@ public class MonthCalenderFragment extends Fragment {
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
         ArrayAdapter<String> adapt
                 = new ArrayAdapter<String>(
-                        getActivity(),
-                        android.R.layout.simple_list_item_1,
-                        items);
+                getActivity(),
+                R.layout.grid_item,
+                R.id.label,
+                items);
+
 
         //어댑터를 GridView 객체에 연결
         gridview.setAdapter(adapt);
 
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String item = (String) adapt.getItem(position);
+                if ( mView != null )
+                {
+                    mView.setBackgroundColor(Color.WHITE);
+                }
+                mView = view.findViewById(R.id.cell);
+                mView.setBackgroundColor(Color.CYAN);
+
+                if ( item.length() > 0 ) {
+                    // 선택한 날짜를 저장
+                    MainActivity.setTime(year, month + 1, Integer.parseInt(item), 12, 0);
+                }
+
+                Toast.makeText(MainActivity.getAppContext(), year + "." + (month + 1) + "." + item, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+
+
+
         //버튼과  년월 텍스트를 id로 참조
-        TextView yearMonth = rootView.findViewById(R.id.year_month);
-        yearMonth.setText(year +"년 " + (month+1) + "월"); //text뷰 컨텐츠 내용을 실행 시 해당 내용으로 변경 해줌 --> 현재 년 월 을 알아야 함
+        //TextView yearMonth = rootView.findViewById(R.id.year_month);
+        //yearMonth.setText(year +"년 " + (month+1) + "월"); //text뷰 컨텐츠 내용을 실행 시 해당 내용으로 변경 해줌 --> 현재 년 월 을 알아야 함
+
+        //onAttach() --> 프래그먼트가 액티비티에 연결될 때 호출됨
+        //해당 Fragment와 연결된 액티비티의 reference 가져오기 -->어댑터에 연결하기 위함
+
+
+
+
 
         // Inflate the layout for this fragment
         return rootView;//넘겨줌 //inflater.inflate(R.layout.fragment_month_calender, container, false);
     }
+
+
 }
