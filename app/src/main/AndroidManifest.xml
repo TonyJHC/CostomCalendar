@@ -3,6 +3,10 @@
     package="com.hansung.android.homework3_final_test">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<<<<<<< Updated upstream
+=======
+    <uses-permission android:name="android.permission.INTERNET"/>
+>>>>>>> Stashed changes
 
     <application
         android:allowBackup="true"
